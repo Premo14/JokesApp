@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using JokesApp.Data;
 using JokesApp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace JokesApp.Controllers
 {
@@ -25,6 +21,16 @@ namespace JokesApp.Controllers
             return View(await _context.Joke.ToListAsync());
         }
 
+        public async Task<IActionResult> ShowSearchForm()
+        {
+            return View();
+        }
+        
+        public async Task<IActionResult> ShowSearchResults(String SearchPhrase)
+        {
+            return View("Index", await _context.Joke.Where(j => j.JokeQuestion.Contains(SearchPhrase)).ToListAsync());
+        }
+        
         // GET: Jokes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -43,6 +49,7 @@ namespace JokesApp.Controllers
             return View(joke);
         }
 
+        [Authorize]
         // GET: Jokes/Create
         public IActionResult Create()
         {
